@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  portainer:
+    image: portainer/portainer
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=America/Colombia
+
+  database-client:
+    image: mysql:latest  
+    command: sh -c "sleep 10 && mysql -h $AURORA_ENDPOINT -u $MYSQL_USER -p$MYSQL_PASSWORD -e 'CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE'"
+    depends_on:
+      - portainer
+
+networks:
+  default:
+    external:
+      name: bridge 
